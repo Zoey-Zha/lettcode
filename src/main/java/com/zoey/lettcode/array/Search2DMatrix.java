@@ -95,7 +95,7 @@ public class Search2DMatrix {
         System.out.println("res = " + res);
         System.out.println("res1 = " + res1);
 
-        /*
+
         // Want to test the difference between matrix == null and matrix.length == 0
         int[][] t = {{}}; // So it has an element...
         System.out.println("The length of matrix = " + t.length); // 1
@@ -113,6 +113,6 @@ public class Search2DMatrix {
         // How about one dimo array
         int[] t3 = {};
         // System.out.println("The length of the array = " + t3.length);
-       */
+
     }
 }
