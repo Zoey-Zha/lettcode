@@ -1,28 +1,28 @@
-package com.zoey.lettcode.array;
+package com.zoey.lettcode.recursion.dc;
 
 public class Search2DMatrix {
 
     // think like a BST, but it is not actually
     // 这个最重要的还是这个矩阵很特殊，每一行都是ascending and 每一个列都是ascending
     public boolean searchMatrix1(int[][] matrix, int target) {
-        // edge case
-        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return false;
 
-        // Initial, from top right, this value is a specail one,
-        // left ones are smaller, and below ones are bigger
-        int m = matrix.length, n = matrix[0].length;
-        int rowIndex = 0, colIndex = n - 1;
-
-        while (rowIndex < m && colIndex >= 0) {
+        //|| matrix[0].length == 0 去掉了多余的条件
+        // || matrix.length == 0 // 去掉了多余的限制条件
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0)                      return false;
+        // 长度
+        int n = matrix.length;
+        // 矩阵宽度
+        int m = matrix[0].length;
+        // 从右上角开始
+        int rowIndex = 0, colIndex = m - 1;
+        while(rowIndex < n && colIndex >= 0) {
             if (matrix[rowIndex][colIndex] == target) return true;
-            if (matrix[rowIndex][colIndex] < target) {
-                colIndex --;
-            }else {
-                rowIndex ++;
-            }
+            else if (target < matrix[rowIndex][colIndex]) colIndex --;
+            else rowIndex ++;
         }
         return false;
     }
+
     // 这道题也可作为divide and conquer的一个paradigm,我还不会写。。
     public boolean searchMatrix(int[][] matrix, int target) {
         // edge case
@@ -61,8 +61,6 @@ public class Search2DMatrix {
         // 找到了target, for example, when target equals "9"
         return true;
     }
-
-
 
     // 一个二分查找 from me
     public boolean searchMatrix2(int[][] matrix, int target) {
@@ -108,7 +106,7 @@ public class Search2DMatrix {
         System.out.println("Is t1 null matrix: " + (t1 == null));
 
         int[][] t2 = null;
-        System.out.println("Is t2 null matrix: " + (t2 == null));
+        System.out.println("Is t2 null matrix: " + (t2 == null)); // null
 
         // How about one dimo array
         int[] t3 = {};
