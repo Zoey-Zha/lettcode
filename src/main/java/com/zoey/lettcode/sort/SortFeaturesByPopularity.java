@@ -3,7 +3,32 @@ package com.zoey.lettcode.sort;
 import java.util.*;
 
 public class SortFeaturesByPopularity {
+
+    // Array built in Sort
     public String[] sortFeatures(String[] features, String[] responses) {
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String feature : features) {
+            map.put(feature, 0);
+        }
+
+        for (String response : responses) {
+            HashSet<String> set = new HashSet<>();
+            String[] strs = response.split(" ");
+            // 去重
+            for (String s1 : strs) {
+                if (map.getOrDefault(s1,-1) >= 0)  set.add(s1);
+            }
+
+            set.forEach(ss -> map.put(ss,map.getOrDefault(ss,0)+1));
+
+            set.clear();
+        }
+
+        Arrays.sort(features,(a, b) -> (map.get(b) - map.get(a)));
+        return features;
+    }
+
+    public String[] sortFeaturesHeap(String[] features, String[] responses) {
         HashMap<String, Integer> map = new HashMap<>();
         HashMap<String, Integer> featureSet = new HashMap<>();
 
@@ -21,7 +46,7 @@ public class SortFeaturesByPopularity {
 
         // for (String feature : features) featureSet.add(feature);
         for (int i = 0; i < features.length; i++) {
-            featureSet.put(features[i],i);
+            // featureSet.put(features[i],i);
             map.put(features[i], 0);
         }
 
@@ -32,29 +57,31 @@ public class SortFeaturesByPopularity {
 
             // 去重
             for (String s1 : s) {
-                if (featureSet.getOrDefault(s1,-1) >= 0)  set.add(s1);
+                if (map.getOrDefault(s1,-1) >= 0)  set.add(s1);
             }
 
+            set.forEach(ss -> map.put(str,map.getOrDefault(ss,0)+1));
             // 更新map, 统计
-            for (String key : set) {
-                map.put(key,map.getOrDefault(key, 0) + 1);
-            }
+//            for (String key : set) {
+//                map.put(key,map.getOrDefault(key, 0) + 1);
+//            }
             // 完成一个response分析，清空set
             set.clear();
         }
         // 把map结果更新到heap中排序
-        for (String key : map.keySet()) {
-            heap.add(key);
-        }
+//        for (String key : map.keySet()) {
+//            heap.add(key);
+//        }
 
+//
+//        String[] res = new String[heap.size()];
+//        int startIndex = 0;
+//        while (heap.size() > 0) {
+//            res[startIndex++] = heap.poll();
+//        }
 
-        String[] res = new String[heap.size()];
-        int startIndex = 0;
-        while (heap.size() > 0) {
-            res[startIndex++] = heap.poll();
-        }
-
-        return res;
+        Arrays.sort(features,(a, b)->(map.get(b)-map.get(a)));
+        return features;
     }
 
     public static void main(String[] args) {

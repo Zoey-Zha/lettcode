@@ -1,44 +1,92 @@
 package com.zoey.lettcode.sort;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class KthWeakestRowsInMatrix {
+
+    // bucket sort
+    public int[] kWeakestRowsBucket(int[][] mat, int k) {
+        int[] res = new int[k];
+        List<Integer>[] lists = new List[mat[0].length+1];
+        // 一直报空指针错误，原来这个的问题,下面的是错的
+//        for (List<Integer> list:lists) list = new ArrayList<>();
+        for (int i = 1; i < lists.length; i++)
+            lists[i] = new ArrayList<>();
+        for (int i = 0; i < mat.length; i++) {
+            // int sum = Arrays.stream(mat[i]).sum();
+            int sum = numOnes(mat[i]);
+            lists[sum].add(i);
+        }
+        for (int i = 1; i < lists.length; i++) {
+            lists[i].sort((a, b) -> (a-b));
+        }
+        int index = 0;
+        for (int i = 0; i< lists.length; i++){
+            // lists[i]是arraylist,先要判断是否lists[i]是否为空
+            if(lists[i] != null) {
+                for (int n : lists[i]) {
+                    if (index < k) res[index++] = n;
+                    if (index == k) return res;
+                }
+            }
+        }
+
+        return res;
+
+    }
+
+
+    // heap
+    private int numOnes(int[] row) {
+        int lo = 0;
+        int hi = row.length;
+
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+
+            if (row[mid] == 1)
+                lo = mid + 1;
+            else
+                hi = mid;
+        }
+
+        return lo;
+    }
+
+
+
     public int[] kWeakestRows(int[][] mat, int k) {
 
-        PriorityQueue<int[]> heap = new PriorityQueue<>(new Comparator<int[]>() {
+        int[] soldiersOfRow = new int[mat.length];
+        PriorityQueue<Integer> heap = new PriorityQueue<>(new Comparator<Integer>() {
             @Override
-            public int compare(int[] o1, int[] o2) {
-                if (o1[1] == o2[1]) {
-                    return o2[0]-o1[0];
+            public int compare(Integer o1, Integer o2) {
+                if (soldiersOfRow[o1] == soldiersOfRow[o2]) {
+                    return o2-o1;
                 } else {
-                    return o2[1]-o1[1];
+                    return soldiersOfRow[o2] - soldiersOfRow[o1];
                 }
             }
         });
 
-        int[] soldiersOfRow = new int[mat.length];
         int index = 0;
 
         for (int[] row : mat) {
-            soldiersOfRow[index] = Arrays.stream(row).sum();
-            int[] count = {index,soldiersOfRow[index]};
+            soldiersOfRow[index] = numOnes(row);
+            int count = soldiersOfRow[index];
             if (heap.size() < k) {
-                heap.add(count);
+                heap.add(index);
             } else {
-                if (count[1] < heap.peek()[1] || (count[1] == heap.peek()[1] && count[0] < heap.peek()[0])) {
-                    heap.poll();
-                    heap.add(count);
-                }
+                heap.add(index);
+                heap.poll();
             }
             index ++;
         }
 
-        int[] res = new int[heap.size()];
-        int indexRes = heap.size()-1;
+        int[] res = new int[k];
+        int indexRes = k-1;
         while(heap.size() > 0) {
-            res[indexRes--] = heap.poll()[0];
+            res[indexRes--] = heap.poll();
         }
 
         return res;
